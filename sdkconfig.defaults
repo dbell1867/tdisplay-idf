@@ -1,0 +1,22 @@
+# ============================================================================
+#  Project build defaults (the ESP-IDF answer to Arduino's build_flags).
+#
+#  ESP-IDF is configured through Kconfig: `idf.py menuconfig` writes your choices
+#  to a generated `sdkconfig` file. Anything you put HERE (sdkconfig.defaults) is
+#  applied when that file is first generated, so a fresh checkout builds the same
+#  way without opening the menu. Committing THIS (and .gitignoring sdkconfig)
+#  keeps the repo reproducible.
+#
+#  Why these two lines:
+#   * The T-Display S3 Pro's USB-C is the chip's *native* USB (no separate serial
+#     chip). Route the console over the built-in USB-Serial/JTAG so the same
+#     cable that powers the board carries printf/ESP_LOG. This is the direct
+#     equivalent of the Arduino project's -DARDUINO_USB_MODE / _CDC_ON_BOOT flags.
+#   * Turn off the secondary UART console so logs don't also go to unused pins.
+# ============================================================================
+CONFIG_ESP_CONSOLE_USB_SERIAL_JTAG=y
+CONFIG_ESP_CONSOLE_UART_DEFAULT=n
+
+# The chip on this board. `idf.py set-target esp32s3` also records this, but
+# pinning it here documents intent and helps a fresh checkout.
+CONFIG_IDF_TARGET="esp32s3"
