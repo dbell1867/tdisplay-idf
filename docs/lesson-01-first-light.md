@@ -56,8 +56,31 @@ lesson, once the pipeline is trusted.
 
 ## Module 1 — Permission to talk to the board
 
-Identical to the Arduino lesson — this is a Linux/USB thing, not a framework
-thing. The board enumerates as `/dev/ttyACM0`, owned by group `uucp` on Arch:
+Identical to the Arduino lesson — this is a Linux/USB thing, not a framework thing.
+
+**Find the port** (don't assume it): with the board unplugged, follow the kernel
+log, then connect the USB-C cable and watch the device it creates:
+
+```bash
+sudo dmesg -W        # follow NEW kernel messages only (skips buffer history); Ctrl-C to stop
+# ... cdc_acm 1-1:1.0: ttyACM0: USB ACM device   <- this machine: /dev/ttyACM0
+```
+
+Native-USB boards like this one appear as `/dev/ttyACMx`; boards with a separate
+serial chip appear as `/dev/ttyUSBx`. (Quick alternative: `ls /dev/ttyACM*` before
+vs. after plugging in — the new entry is your board.)
+
+**Surgical option** — `udevadm monitor` watches the device manager and can be
+filtered to serial devices only, so `dmesg`'s general chatter is gone:
+
+```bash
+udevadm monitor --udev --subsystem-match=tty   # then plug in; only your tty event shows
+```
+
+`--udev` reports the event after the `/dev` node exists; add `--property` to also
+see the device's `ID_VENDOR_ID` / `ID_SERIAL` identity.
+
+**Grant access** — the device is owned by group `uucp` on Arch, so add yourself:
 
 ```bash
 sudo usermod -aG uucp $USER   # then log out and back in
@@ -65,6 +88,8 @@ getent group uucp             # verify membership
 ```
 
 If you already did this for the C++ project, you're done — same user, same group.
+See the [Arduino Lesson 01, Module 1](../../tdisplay/docs/lesson-01-first-light.md)
+for the full explanation of the permissions and the re-login gotcha.
 
 ---
 

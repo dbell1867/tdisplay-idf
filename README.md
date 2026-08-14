@@ -82,6 +82,12 @@ idf.py build                  # compile
 idf.py -p /dev/ttyACM0 flash monitor   # flash + open the console (Ctrl-] to quit)
 ```
 
+**Find the port:** don't assume `/dev/ttyACM0` — with the board unplugged, run
+`sudo dmesg -W` (follow new kernel messages only), then connect the USB-C cable and
+read the device the kernel creates (native-USB boards like this appear as
+`/dev/ttyACMx`). Drop the `-p` flag and `idf.py` auto-detects. See
+[Lesson 01, Module 1](docs/lesson-01-first-light.md) for detail.
+
 ---
 
 ## Lessons
